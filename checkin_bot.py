@@ -83,6 +83,70 @@ class PracticeHubClient:
         response.raise_for_status()
         return response.json()
 
+
+    def get_comments(self, post_id):
+        response = requests.get(
+            f"{self.base_url}/api/v1/posts/{post_id}/comments",
+            headers=self.headers,
+            timeout=30
+        )
+
+        response.raise_for_status()
+        return response.json()
+
+    def post_comment(self, post_id, body):
+       response = requests.post(
+           f"{self.base_url}/api/v1/posts/{post_id}/comments",
+           headers=self.headers,
+           json={"body": body},
+           timeout=30
+    )
+
+       return response
+    
+
+    def has_already_replied(self, post_id, my_user_id):
+        comments = self.get_comments(post_id)
+
+        for comment in comments:
+            if str(comment.get("author_id")) == str(my_user_id):
+                return True
+
+        return False
+
+
+    def is_checkin_post(self, post):
+        title = post.get("title", "")
+        return "check-in" in title.lower()
+
+
+    def process_checkins(self, posts, my_user_id):
+        for post in posts:
+            if not self.is_checkin_post(post):
+                continue
+
+            post_id = post.get("id")
+            title = post.get("title", "")
+
+            if self.has_already_replied(post_id, my_user_id):
+                print(f"Already replied to check-in: {title}")
+                continue
+
+            response = self.post_comment(
+                post_id,
+                "Checking in!"
+            )
+
+            if response.status_code == 201:
+                print(f"Successfully replied to check-in: {title}")
+            elif response.status_code == 423:
+                print(f"Check-in window is closed or unavailable: {title}")
+            else:
+                print(
+                    f"Could not reply to check-in: {title} "
+                    f"(status {response.status_code})"
+                )
+
     def get_all_posts(self):
         all_posts = []
         offset = 0
@@ -172,6 +236,9 @@ if __name__ == "__main__":
         PRACTICE_API_TOKEN
     )
 
+    me = client.get_me()
+    my_user_id = me.get("id")
+
     posts = client.get_instructor_posts(INSTRUCTOR_ID)
 
     print("Instructor ID:", INSTRUCTOR_ID)
@@ -182,3 +249,4 @@ if __name__ == "__main__":
 
     client.save_posts(posts)
     client.download_attachments(posts)
+    client.process_checkins(posts, my_user_id)
