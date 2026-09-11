@@ -7,7 +7,7 @@ name: Scheduled Check-In Bot
 on:
   workflow_dispatch:
   schedule:
-  - cron: "0 14 * * *"
+  - cron: "0 * * * *"
 
 env:
   PRACTICE_API_TOKEN: ${{ secrets.PRACTICE_API_TOKEN }}
