@@ -20,6 +20,7 @@ Runs on a GitHub Actions schedule. Talks to the Practice Hub REST API and:
 import json
 import os
 from pathlib import Path
+from urllib.parse import urljoin
 
 import requests
 
@@ -212,6 +213,8 @@ class PracticeHubClient:
 
                 if not download_url:
                     continue
+                
+                download_url = urljoin(f"{self.base_url}/", download_url)
 
                 safe_filename = f"{post_id}_{attachment_id}_{filename}"
                 file_path = files_dir / safe_filename
