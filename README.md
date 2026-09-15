@@ -52,7 +52,7 @@ If a reply already exists from my account, the bot skips the post to prevent dup
 
 ## AI Usage
 
-I used ChatGPT to help explain the assignment requirements, understand the Practice Hub API documentation, provide guidance on Python and GitHub Actions, and troubleshoot errors encountered while developing the project.
+I used Claude Code to help explain the assignment requirements, understand the Practice Hub API documentation, provide guidance on Python and GitHub Actions, and troubleshoot errors encountered while developing the project.
 
 I created the project files, configured the repository, tested the API requests, reviewed the program output, configured the GitHub repository secrets and variable, and manually tested the GitHub Actions workflow. I reviewed and tested the code to make sure I understood how it works.
 
